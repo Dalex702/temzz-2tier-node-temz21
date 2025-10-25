@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Temzz Frontend</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Temzz 2-Tier Demo</h1>
+    <p>This is 2-Tier app for Demo</p>
+  </header>
+
+  <main class="container">
+    <button id="call">Call Backend</button>
+    <pre id="result"></pre>
+  </main>
+
+  <footer>© Temzz Cloud 2025</footer>
+
+  <script>
+    document.getElementById('call').addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/hello');
+        const data = await res.json();
+        document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        document.getElementById('result').textContent = 'Error: ' + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
