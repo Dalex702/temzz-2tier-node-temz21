@@ -1,6 +1,6 @@
-## Two-Tier Dockerized Web Application Deployment
+# Two-Tier Dockerized Web Application Deployment
 
-# Project Overview
+## Project Overview
 This project demonstrates the deployment of a two-tier application (frontend + backend) using Docker and GitHub Actions CI/CD.  
 The system consists of:
 - Frontend: Static HTML/CSS website served with Nginx.
@@ -73,8 +73,8 @@ Setup & Deployment Instructions
 
 Clone Repository
 bash
-git clone https://github.com/<your-username>/two-tier-app.git
-cd two-tier-app
+git clone https://github.com/Dalex702/Group3-2tier-node-temz21.git
+cd Group3-2tier-node-temz21
 
 2️. Build and Run Locally with Docker Compose
 bash
@@ -86,10 +86,11 @@ Access:
 
 3️. Push Docker Images to DockerHub
 bash
-docker tag frontend:latest yourusername/frontend:v1
-docker tag backend:latest yourusername/backend:v1
-docker push yourusername/frontend:v1
-docker push yourusername/backend:v1
+docker tag group3-2tier-node-temz21-frontend:latest temz21/group3-2tier-node:frontend
+docker tag groups-2tier-node-temz21-backend:latest temz21/group3-2tier-node:backend
+docker push group3-2tier-node-temz21-frontend:latest
+docker push group3-2tier-node-temz21-backend:latest
+
 
 
 4️. Deploy on Linux VM
@@ -115,7 +116,7 @@ Automates:
 - Pulls new Docker images
 - Restarts containers
 
-# Screenshots
+ Screenshots
 - Docker Images built successfully  
 - DockerHub repository showing uploaded images  
 - Azure Linux VM terminal showing deployment success  
@@ -152,7 +153,7 @@ Deliverables Checklist
 ✅ Publicly accessible system  
 ✅ Complete Documentation (this README)
 
----
-**Author**: Group 3
-**Project**: Two-Tier Application Deployment with Docker & GitHub Actions  
-**Date**: 3rd November, 2025 Two-Tier Dockerized Web Application Deployment
+
+Author: Group 3
+Project: Two-Tier Application Deployment with Docker & GitHub Actions  
+Date: 3rd November, 2025 Two-Tier Dockerized Web Application Deployment
