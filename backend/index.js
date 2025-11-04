@@ -3,7 +3,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.get('/api/hello', (req, res) => {
-  res.json({ message: 'Hello from Temzz Backend (Node.js)!' });
+  res.json({ message: 'Hello from Group 3 Backend (Node.js)!' });
 });
 
 app.get('/', (req, res) => res.json({ message: 'Backend root. Use /api/hello' }));

@@ -1,4 +1,4 @@
-name: CI/CD - Temzz 2-Tier App
+name: CI/CD - Group 3 2-Tier App
 
 on:
   push:
