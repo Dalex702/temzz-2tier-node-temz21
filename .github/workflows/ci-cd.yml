@@ -1,67 +1,61 @@
-name: CI/CD - Build, Push to Docker Hub, Deploy to VM
+name: CI/CD Pipeline for 2-Tier App
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main  # or your default branch
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Set up QEMU (optional)
-        uses: docker/setup-qemu-action@v2
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push backend image
-        uses: docker/build-push-action@v4
-        with:
-          context: ./backend
-          push: true
-          tags: temz21/temzz-backend:${{ github.sha }}
-
-      - name: Build and push frontend image
-        uses: docker/build-push-action@v4
-        with:
-          context: ./frontend
-          push: true
-          tags: temz21/temzz-frontend:${{ github.sha }}
-
-      - name: Prepare docker-compose for deploy
+      - name: Build Backend Image
         run: |
-          sed -e "s|temz21/temzz-backend:latest|temz21/temzz-backend:${{ github.sha }}|" \
-              -e "s|temz21/temzz-frontend:latest|temz21/temzz-frontend:${{ github.sha }}|" \
-              docker-compose.yml > deploy-docker-compose.yml
-          cat deploy-docker-compose.yml
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/group3-2tier-node-temz21:backend-latest -f backend.Dockerfile .
 
+      - name: Build Frontend Image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/group3-2tier-node-temz21:frontend-latest -f frontend.Dockerfile .
+
+      - name: Push Images to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/group3-2tier-node-temz21:backend-latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/group3-2tier-node-temz21:frontend-latest
+
+      # Step 1: Copy deployment file to VM
       - name: Copy deploy file to VM
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.VM_SSH_HOST }}
-          username: ${{ secrets.VM_SSH_USER }}
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
           port: 22
           source: deploy-docker-compose.yml
-          target: ${{ secrets.VM_REMOTE_DIR }}
+          target: /home/${{ secrets.VM_USER }}/
 
-      - name: SSH to VM and deploy
-        uses: appleboy/ssh-action@v0.1.7
+      # Step 2: SSH into VM and deploy containers
+      - name: SSH into VM and Deploy
+        uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.VM_SSH_HOST }}
-          username: ${{ secrets.VM_SSH_USER }}
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
           port: 22
           script: |
-            cd ${{ secrets.VM_REMOTE_DIR }}
-            docker compose pull || true
-            docker compose up -d --remove-orphans
+            cd /home/${{ secrets.VM_USER }}
+            echo "Pulling latest Docker images..."
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/group3-2tier-node-temz21:backend-latest
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/group3-2tier-node-temz21:frontend-latest
+
+            echo "Starting containers..."
+            sudo docker-compose down
+            sudo docker-compose up -d
+
+            echo "Deployment complete!"

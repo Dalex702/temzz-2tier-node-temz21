@@ -1,14 +1,10 @@
 services:
   backend:
-    build: ./backend
-    container_name: temzz-backend
+    image: temz21/group3-2tier-node-temz21:backend-latest
     ports:
       - "5000:5000"
 
   frontend:
-    build: ./frontend
-    container_name: temzz-frontend
+    image: temz21/group3-2tier-node-temz21:frontend-latest
     ports:
       - "80:80"
-    depends_on:
-      - backend

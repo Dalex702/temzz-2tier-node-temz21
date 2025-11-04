@@ -1,11 +1,13 @@
 {
-  "name": "temzz-backend",
+  "name": "group3-backend",
   "version": "1.0.0",
-  "description": "Group 3 Node.js backend - simple API",
+  "description": "Group 3 Node.js backend - simple API for two-tier app demo",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
+  "author": "Group 3",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.18.2"
   }
