@@ -22,7 +22,7 @@ jobs:
 
       - name: Build Frontend Image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/group3-2tier-node-temz21:frontend-latest -f frontend.Dockerfile .
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/group3-2tier-node-temz21:frontend-latest -f frontend/Dockerfile ./frontend
 
       - name: Push Images to Docker Hub
         run: |
